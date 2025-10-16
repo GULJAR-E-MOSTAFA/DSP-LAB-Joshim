@@ -1,0 +1,71 @@
+clc;clear all;close all;
+Fs=100;
+T=1/Fs;
+t=0:T:1-T;
+x=sin(2*pi*5*t);
+subplot(3,2,1)
+plot(t,x);
+title('Original signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+%Random signal
+y=sin(2*pi*10*t);
+subplot(3,2,2)
+plot(t,y);
+title('Noise signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+M=x+y;  %Mixed signal
+
+subplot(3,2,3)
+plot(t,M);
+title('Mixed signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+%% Filter Design
+
+D=designfilt('Highpassfir','Filterorder',5,'CutoffFrequency',5,'Samplerate',Fs);   %DSP Matlab toolbox
+
+F=filtfilt(D,M);
+subplot(3,2,4);
+plot(t,F);
+
+title('Filtered signal');
+xlabel('Time');
+ylabel('Magnitude');
+
+%% Frequncy of mixed signal
+L = length(M);             % Length of signal
+NFFT = 2^nextpow2(L);      % Next power of 2 for efficiency
+X = fft(M, NFFT);  
+P2 = abs(X/L);
+P1 = P2(1:NFFT/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(NFFT/2))/NFFT;
+subplot(3,2,5);
+plot(f, P1, 'b', 'LineWidth', 1.2);
+title('Single-Sided Amplitude Spectrum of s(t)')
+xlabel('Frequency (Hz)')
+ylabel('|Amplitude|')
+grid on
+
+%% Frequncy of filtered signal
+L = length(F);             % Length of signal
+NFFT = 2^nextpow2(L);      % Next power of 2 for efficiency
+X = fft(F, NFFT);  
+P2 = abs(X/L);
+P1 = P2(1:NFFT/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = Fs*(0:(NFFT/2))/NFFT;
+subplot(3,2,6);
+plot(f, P1, 'b', 'LineWidth', 1.2);
+title('Single-Sided Amplitude Spectrum of s(t)')
+xlabel('Frequency (Hz)')
+ylabel('|Amplitude|')
+grid on
+
+
+fvtool(D);

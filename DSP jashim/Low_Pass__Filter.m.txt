@@ -1,0 +1,64 @@
+clc;clear all;close all;
+Fs=100;
+T=1/Fs;
+t=0:T:1-T;
+x=sin(2*pi*5*t);
+subplot(3,2,1)
+plot(t,x);
+title('Original signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+%Random signal
+y=sin(2*pi*10*t);
+subplot(3,2,2)
+plot(t,y);
+title('Noise signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+M=x+y;  %Mixed signal
+
+subplot(3,2,3)
+plot(t,M);
+title('Mixed signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+%% Filter Design
+
+D=designfilt('Lowpassfir','Filterorder',5,'CutoffFrequency',6,'Samplerate',Fs);   %DSP Matlab toolbox
+
+F=filtfilt(D,M);
+subplot(3,2,4);
+plot(t,F);
+
+title('Filtered signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+%% Frequncy of mixed signal
+L=length(M);        
+NFFT=1050;       
+X=fft(M,NFFT);       
+Px=X.*conj(X)/(NFFT*L); %Power of each freq components       
+fVals=Fs*(0:NFFT/2-1)/NFFT;      
+subplot(3,2,5);
+plot(fVals,Px(1:NFFT/2),'b','LineSmoothing','on','LineWidth',1);         
+title('Sum of mixed frequency');       
+xlabel('Frequency (Hz)')         
+ylabel('PSD');
+
+%% Frequncy of filtered signal
+L=length(F);        
+NFFT=1050;       
+X=fft(F,NFFT);       
+Px=X.*conj(X)/(NFFT*L); %Power of each freq components       
+fVals=Fs*(0:NFFT/2-1)/NFFT;      
+subplot(3,2,6);
+plot(fVals,Px(1:NFFT/2),'b','LineSmoothing','on','LineWidth',1);         
+title('Sum of filtered frequency');       
+xlabel('Frequency (Hz)')         
+ylabel('PSD');
+
+fvtool(D);

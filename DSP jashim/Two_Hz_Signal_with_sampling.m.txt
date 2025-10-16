@@ -1,0 +1,19 @@
+f = 2;                      
+fs_cont = 1000;             
+t_cont = 0:1/fs_cont:1;     
+y_cont = sin(2 * pi * f * t_cont); 
+
+fs_sample = 10;             
+t_sample = 0:1/fs_sample:1; 
+y_sample = sin(2 * pi * f * t_sample);  
+
+plot(t_cont, y_cont); 
+hold on;
+stem(t_sample, y_sample);
+title('2 Hz Sine Wave - Continuous and Sampled');
+xlabel('Time (s)');
+ylabel('Amplitude');
+legend('Continuous', 'Sampled');
+grid on;
+
+

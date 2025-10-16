@@ -1,0 +1,66 @@
+
+clc;
+close all;
+clear all;
+
+%signal 1
+t = 0 : 1 : 400 ; % Time Samples
+f = 10; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x1 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%signal 2
+t = 0 : 1 : 400 ; % Time Samples
+f = 15; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x2 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%signal 3
+t = 0 : 1 : 400 ; % Time Samples
+f = 20; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x3 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%signal 4
+t = 0 : 1 : 400 ; % Time Samples
+f = 30; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x4 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%sum all signal x1+x2+x3
+s=x1+x2+x3+x4;
+%%------------------------------------------------------------------
+%calculate fft of added signal
+L = length(s);             % Length of signal
+NFFT = 2^nextpow2(L);      % Next power of 2 for efficiency
+X = fft(s, NFFT);  
+P2 = abs(X/L);
+P1 = P2(1:NFFT/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = fs*(0:(NFFT/2))/NFFT;
+subplot(2,1,1);
+plot(f, P1, 'b', 'LineWidth', 1.2);
+title('Single-Sided Amplitude Spectrum of s(t)')
+xlabel('Frequency (Hz)')
+ylabel('|Amplitude|')
+grid on
+
+%call butterworth bandpass filter function
+
+filterdata=Bandpass_Filter(s);
+
+L = length(filterdata);             % Length of signal
+NFFT = 2^nextpow2(L);      % Next power of 2 for efficiency
+X = fft(filterdata, NFFT);  
+P2 = abs(X/L);
+P1 = P2(1:NFFT/2+1);
+P1(2:end-1) = 2*P1(2:end-1);
+f = fs*(0:(NFFT/2))/NFFT;
+subplot(2,1,2);
+plot(f, P1, 'b', 'LineWidth', 1.2);
+title('Single-Sided Amplitude Spectrum of s(t)')
+xlabel('Frequency (Hz)')
+ylabel('|Amplitude|')
+grid on
+
+

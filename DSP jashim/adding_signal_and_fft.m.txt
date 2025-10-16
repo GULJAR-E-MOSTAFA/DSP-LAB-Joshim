@@ -1,0 +1,68 @@
+
+clc;
+close all;
+clear all;
+
+%signal 1
+t = 0 : 1 : 400 ; % Time Samples
+f = 10; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x1 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%signal 2
+t = 0 : 1 : 400 ; % Time Samples
+f = 15; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x2 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%signal 3
+t = 0 : 1 : 400 ; % Time Samples
+f = 20; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x3 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%signal 4
+t = 0 : 1 : 400 ; % Time Samples
+f = 30; % Input Signal Frequency
+fs = 100; % Sampling Frequency
+x4 = 4*sin(2*pi*f/fs*t); % Generate Sine Wave
+
+%sum all signal x1+x2+x3
+s=x1+x2+x3+x4;
+%%------------------------------------------------------------------
+%calculate fft of added signal
+
+L=length(s);        
+NFFT=1050;  
+
+X=fft(s,NFFT);
+
+Px=X.*conj(X)/(NFFT*L); %Power of each freq components       
+fVals=fs*(0:NFFT/2-1)/NFFT;   
+
+subplot(2,1,1);
+
+plot(fVals,Px(1:NFFT/2),'b','LineSmoothing','on','LineWidth',1);         
+
+title('Sum of all frequency');       
+xlabel('Frequency (Hz)')         
+ylabel('PSD');
+
+%call butterworth bandpass filter function
+
+filterdata=Bandpass_Filter(s);
+
+
+%Apply fft to see the filtered frequency
+L=length(filterdata);        
+NFFT=1050;       
+X=fft(filterdata,NFFT);       
+Px=X.*conj(X)/(NFFT*L); %Power of each freq components       
+fVals=fs*(0:NFFT/2-1)/NFFT;      
+subplot(2,1,2);
+plot(fVals,Px(1:NFFT/2),'b','LineSmoothing','on','LineWidth',1);         
+title('After applying butterworth filter');       
+xlabel('Frequency (Hz)')         
+ylabel('PSD');
+
+

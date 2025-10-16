@@ -1,0 +1,15 @@
+clc;
+clear all;
+close all;
+
+f = 2;                
+fs = 1000;           
+t = 0:1/fs:1-1/fs;  
+
+y = sin(2 * pi * f * t);
+
+plot(t, y);
+title('2 Hz Sine Wave');
+xlabel('Time (s)');
+ylabel('Amplitude');
+grid on;
